@@ -10,9 +10,17 @@ import it.unibo.inner.api.Predicate;
 public class BasicIteratorWithPolicy<T> implements IterableWithPolicy<T> {
 
     private final T[] itemsToIterate;
+    private Predicate<T> predicate;
+
+    public BasicIteratorWithPolicy(final T[] elements, final Predicate<T> predicate) {
+        this.itemsToIterate = Arrays.copyOf(elements, elements.length);
+        this.predicate = predicate;
+    }
 
     public BasicIteratorWithPolicy(final T[] elements) {
-        this.itemsToIterate = Arrays.copyOf(elements, elements.length);
+        this(elements, (elem) -> {
+            return true;
+        });
     }
 
     private class InnerBasicIteratorWithPolicy implements Iterator<T> {
@@ -21,19 +29,35 @@ public class BasicIteratorWithPolicy<T> implements IterableWithPolicy<T> {
 
         @Override
         public boolean hasNext() {
-            return this.currentIndex < itemsToIterate.length;
+            if (getNextFilteredElementIndex() >= 0) {
+                return true;
+            }
+            return false;
         }
 
         @Override
         public T next() {
             if (hasNext()) {
-                T item = itemsToIterate[currentIndex];
-                currentIndex++;
+                T item = itemsToIterate[getNextFilteredElementIndex()];
+                currentIndex = getNextFilteredElementIndex() + 1;
                 return item;
             } else {
                 throw new NoSuchElementException();
             }
+        }
 
+        private int getNextFilteredElementIndex() {
+            int nextItemIndex = -1;
+            boolean foundNext = false;
+            int tmpIndex = currentIndex;
+            while (!foundNext && tmpIndex < itemsToIterate.length) {
+                if (predicate.test(itemsToIterate[tmpIndex])) {
+                    foundNext = true;
+                    nextItemIndex = tmpIndex;
+                }
+                tmpIndex++;
+            }
+            return nextItemIndex;
         }
 
     }
@@ -44,8 +68,8 @@ public class BasicIteratorWithPolicy<T> implements IterableWithPolicy<T> {
     }
 
     @Override
-    public void setIterationPolicy(Predicate<T> filter) {
-        throw new UnsupportedOperationException("Unimplemented method 'setIterationPolicy'");
+    public void setIterationPolicy(final Predicate<T> filter) {
+        this.predicate = filter;
     }
 
 }
