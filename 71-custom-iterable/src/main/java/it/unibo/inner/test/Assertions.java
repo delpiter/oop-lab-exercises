@@ -1,6 +1,6 @@
 package it.unibo.inner.test;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -13,7 +13,8 @@ public final class Assertions {
     private static final String ERROR_FOOTER = " #";
     private static final String EXPECTED_HEADER = "- As expected: ";
 
-    private Assertions() { }
+    private Assertions() {
+    }
 
     /**
      * Exits with an error if the condition is not met.
@@ -29,10 +30,11 @@ public final class Assertions {
     }
 
     /**
-     * Exits with an error if the two collections do not contain the same elements (except for the order).
+     * Exits with an error if the two collections do not contain the same elements
+     * (except for the order).
      *
      * @param expected the expected collection
-     * @param actual the actual collection
+     * @param actual   the actual collection
      */
     public static void assertContentEqualsInOrder(final Iterable<?> expected, final Collection<?> actual) {
         if (checkContentEqualsInOrder(expected, actual)) {
@@ -46,6 +48,7 @@ public final class Assertions {
         var counter = 0L;
         for (var elem : iter) {
             counter++;
+            elem.getClass();
         }
         return counter;
     }
@@ -67,7 +70,6 @@ public final class Assertions {
         return true;
     }
 
-
     private static void confirmOK(final Object expected, final Object actual) {
         System.out.println(EXPECTED_HEADER + expected + " expected, and " + actual + " received."); // NOPMD
     }
@@ -80,11 +82,11 @@ public final class Assertions {
         final var error = ERROR_HEADER + message + ERROR_FOOTER;
         final var decoration = "#".repeat(error.length());
         final var builder = new StringBuilder(3 * error.length() + 2)
-            .append(decoration)
-            .append('\n')
-            .append(error)
-            .append('\n')
-            .append(decoration);
+                .append(decoration)
+                .append('\n')
+                .append(error)
+                .append('\n')
+                .append(decoration);
         System.err.println(builder); // NOPMD
         System.exit(errorCode);
     }
