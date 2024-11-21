@@ -1,10 +1,5 @@
 package it.unibo.mvc;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -15,8 +10,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Random;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * This class is a simple application that writes a random number on a file.
@@ -41,10 +42,27 @@ public class BadIOGUI {
     public BadIOGUI() {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
-        final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
+        /* Ex 01.01 */
+        final JPanel panelEs1 = new JPanel();
+        panelEs1.setLayout(new BoxLayout(panelEs1, BoxLayout.X_AXIS));
+        canvas.add(panelEs1, BorderLayout.CENTER);
+        final JButton write = new JButton("Write on File");
+        panelEs1.add(write);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        /* Ex 01.02 */
+        final JButton buttonEs2 = new JButton("Read from File");
+        panelEs1.add(buttonEs2);
+        buttonEs2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                try {
+                    System.out.println(Files.readAllLines(Path.of(PATH))); // NOPMD Exercise requires it
+                } catch (IOException ioE) {
+                    showError(frame, ioE);
+                }
+            }
+        });
         /*
          * Handlers
          */
@@ -60,12 +78,16 @@ public class BadIOGUI {
                  */
                 try (PrintStream ps = new PrintStream(PATH, StandardCharsets.UTF_8)) {
                     ps.print(randomGenerator.nextInt());
-                } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(frame, e1, "Error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace(); // NOPMD: allowed as this is just an exercise
+                } catch (final IOException e1) {
+                    showError(frame, e1);
                 }
             }
         });
+    }
+
+    private void showError(final JFrame frame, final Exception e) {
+        JOptionPane.showMessageDialog(frame, e, "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace(); // NOPMD: allowed as this is just an exercise
     }
 
     private void display() {
@@ -90,6 +112,7 @@ public class BadIOGUI {
         /*
          * OK, ready to push the frame onscreen
          */
+        frame.pack();
         frame.setVisible(true);
     }
 
@@ -99,6 +122,6 @@ public class BadIOGUI {
      * @param args ignored
      */
     public static void main(final String... args) {
-       new BadIOGUI().display();
+        new BadIOGUI().display();
     }
 }
