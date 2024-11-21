@@ -40,6 +40,9 @@ public final class SimpleController implements Controller {
 
     @Override
     public void print() {
+        if (this.nextPrint == null) {
+            throw new IllegalStateException("There is no string to print");
+        }
         LOGGER.log(Level.INFO, nextPrint);
         this.history.add(nextPrint);
     }
