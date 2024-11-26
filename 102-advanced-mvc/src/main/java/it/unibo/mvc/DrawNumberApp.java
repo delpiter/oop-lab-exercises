@@ -28,7 +28,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             view.setObserver(this);
             view.start();
         }
-        Configuration config = ConfigurationReader.GetConfiguration();
+        final Configuration config = ConfigurationReader.getConfiguration();
         this.model = new DrawNumberImpl(config.getMin(), config.getMax(), config.getAttempts());
     }
 
