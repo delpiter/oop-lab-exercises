@@ -3,10 +3,13 @@ package it.unibo.oop.lab.streams;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -31,42 +34,57 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> orderedSongNames() {
-        return null;
+        return songs.stream().map(Song::getSongName).sorted(String::compareTo);
     }
 
     @Override
     public Stream<String> albumNames() {
-        return null;
+        return albums.keySet().stream();
     }
 
     @Override
     public Stream<String> albumInYear(final int year) {
-        return null;
+        return albums.entrySet().stream().filter(e -> e.getValue() == year).map(Entry::getKey);
     }
 
     @Override
     public int countSongs(final String albumName) {
-        return -1;
+        return (int) getSongsOfAlbum(albumName).count();
     }
 
     @Override
     public int countSongsInNoAlbum() {
-        return -1;
+        return (int) songs.stream().filter(s -> !s.getAlbumName().isPresent()).count();
     }
 
     @Override
     public OptionalDouble averageDurationOfSongs(final String albumName) {
-        return null;
+        return getSongsOfAlbum(albumName).mapToDouble(Song::getDuration).average();
     }
 
     @Override
     public Optional<String> longestSong() {
-        return null;
+        return songs.stream().max((s1, s2) -> Double.compare(s1.getDuration(), s2.getDuration()))
+                .map(Song::getSongName);
     }
 
     @Override
     public Optional<String> longestAlbum() {
-        return null;
+        return albumNames().map(albumName -> Pair.of(albumName, getDurationOfAlbum(albumName)))
+                .max((s1, s2) -> Double.compare(s1.getRight(), s2.getRight())).map(Pair::getLeft);
+    }
+
+    /**
+     * 
+     * @param albumName
+     * @return return all the songs in a specified album
+     */
+    private Stream<Song> getSongsOfAlbum(final String albumName) {
+        return songs.stream().filter(s -> s.getAlbumName().isPresent() && s.getAlbumName().get().equals(albumName));
+    }
+
+    private Double getDurationOfAlbum(final String albumName) {
+        return getSongsOfAlbum(albumName).map(Song::getDuration).reduce(Double::sum).orElse(0.0);
     }
 
     private static final class Song {
