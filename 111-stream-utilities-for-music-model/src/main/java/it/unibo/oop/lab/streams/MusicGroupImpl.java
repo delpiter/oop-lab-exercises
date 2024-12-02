@@ -1,5 +1,6 @@
 package it.unibo.oop.lab.streams;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,7 +35,7 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> orderedSongNames() {
-        return songs.stream().map(Song::getSongName).sorted(String::compareTo);
+        return songs.stream().map(Song::getSongName).sorted();
     }
 
     @Override
@@ -44,12 +45,16 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> albumInYear(final int year) {
-        return albums.entrySet().stream().filter(e -> e.getValue() == year).map(Entry::getKey);
+        return albums.entrySet().stream()
+                .filter(e -> e.getValue() == year)
+                .map(Entry::getKey);
     }
 
     @Override
     public int countSongs(final String albumName) {
-        return (int) getSongsOfAlbum(albumName).count();
+        return getSongsOfAlbum(albumName)
+                .mapToInt(e -> 1)
+                .sum();
     }
 
     @Override
@@ -64,14 +69,15 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Optional<String> longestSong() {
-        return songs.stream().max((s1, s2) -> Double.compare(s1.getDuration(), s2.getDuration()))
+        return songs.stream()
+                .max(Comparator.comparingDouble(Song::getDuration))
                 .map(Song::getSongName);
     }
 
     @Override
     public Optional<String> longestAlbum() {
         return albumNames().map(albumName -> Pair.of(albumName, getDurationOfAlbum(albumName)))
-                .max((s1, s2) -> Double.compare(s1.getRight(), s2.getRight())).map(Pair::getLeft);
+                .max(Comparator.comparingDouble(Pair::getRight)).map(Pair::getLeft);
     }
 
     /**
