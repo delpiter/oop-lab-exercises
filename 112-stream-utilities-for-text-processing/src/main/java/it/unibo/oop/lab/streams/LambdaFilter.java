@@ -50,7 +50,7 @@ public final class LambdaFilter extends JFrame {
                         .stream()
                         .sorted()
                         .collect(Collectors.joining(", "))),
-        WORD_COUNTER("Count each Word Appearence", s -> Arrays.asList(s.split("[\\s\\n\\r]"))
+        WORD_COUNTER("Count each Word Appearence", s -> Arrays.asList(s.split("[\\s\\n]"))
                 .stream()
                 .collect(Collectors.groupingBy(String::trim, Collectors.counting()))
                 .entrySet()
