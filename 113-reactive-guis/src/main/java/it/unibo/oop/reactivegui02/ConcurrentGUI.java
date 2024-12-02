@@ -3,6 +3,8 @@ package it.unibo.oop.reactivegui02;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,7 +16,7 @@ import javax.swing.SwingUtilities;
  * Second example of reactive GUI.
  */
 @SuppressWarnings("PMD.AvoidPrintStackTrace")
-public final class ConcurrentGUI extends JFrame {
+public class ConcurrentGUI extends JFrame {
     private static final long serialVersionUID = 2L;
     private static final double WIDTH_PERC = 0.2;
     private static final double HEIGHT_PERC = 0.1;
@@ -51,6 +53,18 @@ public final class ConcurrentGUI extends JFrame {
         stop.addActionListener(e -> agent.stopCounting());
         up.addActionListener(e -> agent.increment());
         down.addActionListener(e -> agent.decrement());
+    }
+
+    /**
+     * 
+     * @return a list containing all the buttons in the page
+     */
+    public List<JButton> getCommandButtons() {
+        var list = new ArrayList<JButton>();
+        list.add(stop);
+        list.add(down);
+        list.add(up);
+        return list;
     }
 
     /*
