@@ -8,9 +8,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -76,8 +75,15 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Optional<String> longestAlbum() {
-        return albumNames().map(albumName -> Pair.of(albumName, getDurationOfAlbum(albumName)))
-                .max(Comparator.comparingDouble(Pair::getRight)).map(Pair::getLeft);
+        return albumNames()
+                .collect(Collectors.toMap(albumName -> albumName, albumName -> getDurationOfAlbum(albumName)))
+                .entrySet()
+                .stream()
+                .max(Comparator.comparingDouble(Entry::getValue))
+                .map(Entry::getKey);
+        // return albumNames().map(albumName -> Pair.of(albumName,
+        // getDurationOfAlbum(albumName)))
+        // .max(Comparator.comparingDouble(Pair::getRight)).map(Pair::getLeft);
     }
 
     /**
@@ -89,6 +95,11 @@ public final class MusicGroupImpl implements MusicGroup {
         return songs.stream().filter(s -> s.getAlbumName().isPresent() && s.getAlbumName().get().equals(albumName));
     }
 
+    /**
+     * 
+     * @param albumName
+     * @return returns the duration of the whole album (sum of all durations)
+     */
     private Double getDurationOfAlbum(final String albumName) {
         return getSongsOfAlbum(albumName).map(Song::getDuration).reduce(Double::sum).orElse(0.0);
     }
