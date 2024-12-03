@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,26 +37,35 @@ import javax.swing.JTextArea;
 public final class LambdaFilter extends JFrame {
 
     private static final long serialVersionUID = 1760990730218643730L;
+    public static Function<Integer, Integer> IDENTITY = new Function<Integer,Integer>() {
+        @Override
+        public Integer apply(Integer t) {
+            return t;
+        }        
+    };
 
     private enum Command {
         /**
          * Commands.
          */
         IDENTITY("No modifications", Function.identity()),
-        TO_LOWERCASE("Lower Case", s -> s.toLowerCase()),
+        TO_LOWERCASE("Lower Case", String::toLowerCase),
         CHAR_COUNT("Count Characters", s -> Integer.toString(s.length())),
-        LINES_COUNT("Count Lines", s -> Integer.toString(s.split(System.lineSeparator()).length)),
-        LIST_ORDERED_WORDS("Words in Alphabetical Order",
-                s -> Arrays.asList(s.split("[\\s\\n\\r]"))
-                        .stream()
-                        .sorted()
-                        .collect(Collectors.joining(", "))),
-        WORD_COUNTER("Count each Word Appearence", s -> Arrays.asList(s.split("[\\s\\n]"))
+        LINES_COUNT("Count Lines", s -> Integer.toString(s.split("\\R").length)),
+        LIST_ORDERED_WORDS(
+            "Words in Alphabetical Order",
+            s -> Arrays.asList(s.split("[\\s\\n]"))
+                .stream()
+                .sorted(Comparator.comparing(String::toLowerCase))
+                .collect(Collectors.joining(", "))),
+        WORD_COUNTER(
+            "Count each Word Appearence",
+            s -> Arrays.asList(s.split("[\\s\\n]"))
                 .stream()
                 .collect(Collectors.groupingBy(String::trim, Collectors.counting()))
                 .entrySet()
                 .stream()
-                .map(entry -> entry.getKey().toString().concat("->").concat(entry.getValue().toString()))
+                .map(entry -> entry.getKey() + "->" + entry.getValue())
                 .collect(Collectors.joining("\n")));
 
         private final String commandName;
@@ -78,7 +88,7 @@ public final class LambdaFilter extends JFrame {
 
     private LambdaFilter() {
         super("Lambda filter GUI");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         final JPanel panel1 = new JPanel();
         final LayoutManager layout = new BorderLayout();
         panel1.setLayout(layout);

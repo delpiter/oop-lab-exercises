@@ -3,8 +3,6 @@ package it.unibo.oop.reactivegui02;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,7 +48,12 @@ public class ConcurrentGUI extends JFrame {
         /*
          * Register a listener that stops it
          */
-        stop.addActionListener(e -> agent.stopCounting());
+        stop.addActionListener(e -> {
+            agent.stopCounting();
+            stop.setEnabled(false);
+            up.setEnabled(false);
+            down.setEnabled(false);
+        });
         up.addActionListener(e -> agent.increment());
         down.addActionListener(e -> agent.decrement());
     }
@@ -59,12 +62,8 @@ public class ConcurrentGUI extends JFrame {
      * 
      * @return a list containing all the buttons in the page
      */
-    public List<JButton> getCommandButtons() {
-        var list = new ArrayList<JButton>();
-        list.add(stop);
-        list.add(down);
-        list.add(up);
-        return list;
+    public JButton getCommandButtons() {
+        return stop;
     }
 
     /*

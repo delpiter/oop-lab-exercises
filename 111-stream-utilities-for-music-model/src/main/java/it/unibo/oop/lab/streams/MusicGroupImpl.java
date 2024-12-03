@@ -81,9 +81,6 @@ public final class MusicGroupImpl implements MusicGroup {
                 .stream()
                 .max(Comparator.comparingDouble(Entry::getValue))
                 .map(Entry::getKey);
-        // return albumNames().map(albumName -> Pair.of(albumName,
-        // getDurationOfAlbum(albumName)))
-        // .max(Comparator.comparingDouble(Pair::getRight)).map(Pair::getLeft);
     }
 
     /**

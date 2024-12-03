@@ -1,5 +1,7 @@
 package it.unibo.oop.reactivegui03;
 
+import javax.swing.SwingUtilities;
+
 /**
  * Third experiment with reactive gui.
  */
@@ -7,6 +9,7 @@ package it.unibo.oop.reactivegui03;
 public final class AnotherConcurrentGUI extends it.unibo.oop.reactivegui02.ConcurrentGUI {
 
     public AnotherConcurrentGUI() {
+        super();
         final Agent blockingAgent = new Agent();
         new Thread(blockingAgent).start();
     }
@@ -41,8 +44,9 @@ public final class AnotherConcurrentGUI extends it.unibo.oop.reactivegui02.Concu
                 }
             }
             var btns = getCommandButtons();
-            btns.get(0).doClick();
-            btns.forEach(btn -> btn.setEnabled(false));
+            SwingUtilities.invokeLater(()->{
+                btns.doClick(); 
+            });
         }
     }
 }
