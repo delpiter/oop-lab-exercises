@@ -1,7 +1,6 @@
 package it.unibo.oop.workers02;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * This is a standard implementation of the calculation.
@@ -29,7 +28,7 @@ public class MultiThreadedSumMatrix implements SumMatrix {
     private static final class Worker extends Thread {
 
         private final double[][] matrix;
-        private final int startpos;
+        private final int start;
         private final int nelem;
         private double res;
 
@@ -37,28 +36,29 @@ public class MultiThreadedSumMatrix implements SumMatrix {
          * Builds a new worker.
          * 
          * @param matrix
-         *                 the matrix to be summed
          * @param startpos
-         *                 the start position for the sum in charge to this worker
          * @param nelem
-         *                 the no. of element for him to sum
          */
         private Worker(final double[][] matrix, final int startpos, final int nelem) {
             super();
             this.matrix = matrix;
-            this.startpos = startpos;
+            this.start = startpos;
             this.nelem = nelem;
         }
 
         @Override
         public void run() {
-            for (int i = startpos; i < matrix.length && i < startpos + nelem; i++) {
+            for (int i = start; i < matrix.length && i < start + nelem; i++) {
                 for (final double d : this.matrix[i]) {
                     this.res += d;
                 }
             }
         }
 
+        /**
+         * Returns the result that the thread got
+         * @return
+         */
         public double getResult() {
             return this.res;
         }
@@ -71,22 +71,26 @@ public class MultiThreadedSumMatrix implements SumMatrix {
     @Override
     public double sum(final double[][] matrix) {
         final int size = matrix.length / nthread + matrix.length % nthread;
-        final List<Worker> workers = new ArrayList<>(nthread);
-        for (int start = 0; start < matrix.length; start += size) {
-            workers.add(new Worker(matrix, start, size));
-        }
-        for (final Thread worker : workers) {
-            worker.start();
-        }
-        double sum = 0;
-        for (final Worker worker : workers) {
+        return IntStream
+            .iterate(0, start -> start + size)
+            .limit(this.nthread)
+            .mapToObj(start -> new Worker(matrix, start, size))
+            .peek(Thread::start)
+            .peek(MultiThreadedSumMatrix::joinUninterruptibly)
+            .mapToDouble(Worker::getResult)
+            .sum();
+    }
+
+    @SuppressWarnings("PMD.AvoidPrintStackTrace")
+    private static void joinUninterruptibly(final Thread target) {
+        var joined = false;
+        while (!joined) {
             try {
-                worker.join();
-                sum += worker.getResult();
+                target.join();
+                joined = true;
             } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
+                e.printStackTrace();
             }
         }
-        return sum;
     }
 }
