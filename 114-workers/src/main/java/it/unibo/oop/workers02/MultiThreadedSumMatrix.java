@@ -49,10 +49,18 @@ public class MultiThreadedSumMatrix implements SumMatrix {
 
         @Override
         public void run() {
+            // Just uncomment either one of these two segments of code
+
+            /*
+             * Solution with stream - wrong output
+             * Expected output: 4.995E8 Actual output: 2.4975E8
+             */
             // this.res = IntStream
             //     .iterate(start, counter -> counter + 1)
             //     .limit(Math.min(this.matrix.length,this.start + this.nelem))
             //     .mapToDouble(i -> DoubleStream.of(this.matrix[i]).sum()).sum();
+
+            /* Solution with for iteration - correct output */
             for (int i = start; i < Math.min(this.matrix.length, this.start + this.nelem); i++) {
                 this.res  += DoubleStream.of(matrix[i]).sum();
             }
