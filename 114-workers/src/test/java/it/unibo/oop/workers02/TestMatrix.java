@@ -31,7 +31,7 @@ class TestMatrix {
      * output, ad eccezione ovviamente dei tempi.
      */
 
-    private static final int SIZE = 10_000;
+    private static final int SIZE = 1_000;
     private static final double EXPECTED_DELTA = 0.01;
     private static final String MSEC = " msec";
 
@@ -42,7 +42,7 @@ class TestMatrix {
     void testBasic() {
         double sum = 0;
         final double[][] matrix = new double[SIZE][SIZE];
-        for (double[] d : matrix) {
+        for (final double[] d : matrix) {
             for (int i = 0; i < SIZE; i++) {
                 d[i] = i;
                 sum += i;

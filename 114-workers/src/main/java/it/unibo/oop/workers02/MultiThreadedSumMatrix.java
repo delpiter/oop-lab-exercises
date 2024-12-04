@@ -1,5 +1,6 @@
 package it.unibo.oop.workers02;
 
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 /**
@@ -48,16 +49,18 @@ public class MultiThreadedSumMatrix implements SumMatrix {
 
         @Override
         public void run() {
-            for (int i = start; i < matrix.length && i < start + nelem; i++) {
-                for (final double d : this.matrix[i]) {
-                    this.res += d;
-                }
+            // this.res = IntStream
+            //     .iterate(start, counter -> counter + 1)
+            //     .limit(Math.min(this.matrix.length,this.start + this.nelem))
+            //     .mapToDouble(i -> DoubleStream.of(this.matrix[i]).sum()).sum();
+            for (int i = start; i < Math.min(this.matrix.length, this.start + this.nelem); i++) {
+                this.res  += DoubleStream.of(matrix[i]).sum();
             }
         }
 
         /**
-         * Returns the result that the thread got
-         * @return
+         * 
+         * @return Returns the result that the thread got.
          */
         public double getResult() {
             return this.res;
