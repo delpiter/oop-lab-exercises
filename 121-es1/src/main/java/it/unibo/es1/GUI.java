@@ -1,11 +1,12 @@
 package it.unibo.es1;
 
-import java.awt.*;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import javax.swing.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 
 public class GUI extends JFrame{
@@ -14,7 +15,7 @@ public class GUI extends JFrame{
 
 	public GUI(int size){
 		final Logics logics = new LogicsImpl(size);
-		this.setSize(500, 100);
+		this.setSize(500, 200);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(new FlowLayout());
 		

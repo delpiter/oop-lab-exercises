@@ -1,9 +1,9 @@
 package it.unibo.es1;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class LogicsImpl implements Logics {
 
@@ -13,8 +13,8 @@ public class LogicsImpl implements Logics {
 
 	public LogicsImpl(int size) {
 		this.size = size;
-		this.valuesList = new ArrayList<>(this.size);
-		this.enabledList = new ArrayList<>(this.size);
+		this.valuesList = IntStream.iterate(0,i -> i + 1).limit(size).mapToObj(x -> 0).collect(Collectors.toList());
+		this.enabledList = IntStream.iterate(0, i -> i + 1).limit(size).mapToObj(x -> true).collect(Collectors.toList());
 	}
 
 	@Override
@@ -35,6 +35,7 @@ public class LogicsImpl implements Logics {
 	@Override
 	public int hit(int elem) {
 		int value = this.valuesList.get(elem) + 1;
+		this.valuesList.set(elem, value);
 		if(value == this.size){
 			this.enabledList.set(elem, false);
 		}
@@ -48,7 +49,7 @@ public class LogicsImpl implements Logics {
 
 	@Override
 	public boolean toQuit() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'toQuit'");
+		int value = valuesList.get(0);
+		return valuesList.stream().allMatch(current -> current.equals(value));
 	}
 }
