@@ -13,8 +13,8 @@ public class LogicsImpl implements Logics {
 
 	public LogicsImpl(int size) {
 		this.size = size;
-		this.valuesList = IntStream.iterate(0,i -> i + 1).limit(size).mapToObj(x -> 0).collect(Collectors.toList());
-		this.enabledList = IntStream.iterate(0, i -> i + 1).limit(size).mapToObj(x -> true).collect(Collectors.toList());
+		this.valuesList = IntStream.range(0, size).mapToObj(x -> 0).collect(Collectors.toList());
+		this.enabledList = IntStream.range(0, size).mapToObj(x -> true).collect(Collectors.toList());
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class GUI extends JFrame{
 		this.setSize(500, 200);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(new FlowLayout());
-		
+
 		ActionListener ac = e -> {
 			final JButton buttonClicked = (JButton)e.getSource();
 			final int buttonPosition = jbs.indexOf(buttonClicked);
