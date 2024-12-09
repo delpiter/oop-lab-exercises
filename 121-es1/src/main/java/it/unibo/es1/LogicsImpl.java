@@ -7,11 +7,11 @@ import java.util.stream.IntStream;
 
 public class LogicsImpl implements Logics {
 
-	private int size;
-	private List<Integer> valuesList;
-	private List<Boolean> enabledList;
+	private final int size;
+	private final List<Integer> valuesList;
+	private final List<Boolean> enabledList;
 
-	public LogicsImpl(int size) {
+	public LogicsImpl(final int size) {
 		this.size = size;
 		this.valuesList = IntStream.range(0, size).mapToObj(x -> 0).collect(Collectors.toList());
 		this.enabledList = IntStream.range(0, size).mapToObj(x -> true).collect(Collectors.toList());
@@ -33,7 +33,7 @@ public class LogicsImpl implements Logics {
 	}
 
 	@Override
-	public int hit(int elem) {
+	public int hit(final int elem) {
 		int value = this.valuesList.get(elem) + 1;
 		this.valuesList.set(elem, value);
 		if(value == this.size){

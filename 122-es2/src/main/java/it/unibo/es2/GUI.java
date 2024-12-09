@@ -1,17 +1,22 @@
 package it.unibo.es2;
 
-import javax.swing.*;
-import java.util.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class GUI extends JFrame {
     
     private final Map<JButton, Pair<Integer, Integer>> buttons = new HashMap<>();
-    //private final Logics logics;
+    private final Logics logics;
     
     public GUI(int size) {
-        //this.logics = new LogicsImpl(size);
+        this.logics = new LogicsImpl(size);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(100*size, 100*size);
         
