@@ -1,36 +1,49 @@
 package it.unibo.es3;
 
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class GUI extends JFrame {
     
-    private final List<JButton> cells = new ArrayList<>();
+    private final Map<JButton,Pair<Integer,Integer>> cells = new HashMap<>();
     
     public GUI(int width) {
+        final Logics logic = new LogicsImpl(width);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(70*width, 70*width);
-        
+        final JPanel canva = new JPanel();
+        canva.setLayout(new BorderLayout());
+
         JPanel panel = new JPanel(new GridLayout(width,width));
-        this.getContentPane().add(panel);
+        canva.add(panel,BorderLayout.CENTER);
+        this.getContentPane().add(canva);
         
-        ActionListener al = e -> {
-            var jb = (JButton)e.getSource();
-        	jb.setText(String.valueOf(cells.indexOf(jb)));
-        };
-                
+        JButton next = new JButton(">");
+        canva.add(next,BorderLayout.SOUTH);
+        
+        next.addActionListener(e -> {
+           logic.executeNextStep();
+           this.cells.forEach((btn, position) -> btn.setText(logic.setText(position)));
+           if(logic.doClose()){
+                System.exit(0);
+           }
+        });
+
         for (int i=0; i<width; i++){
-            for (int j=0; j<width; j++){
-            	var pos = new Pair<>(j,i);
-                final JButton jb = new JButton(pos.toString());
-                this.cells.add(jb);
-                jb.addActionListener(al);
+            for (int j = 0; j < width; j++) {
+                var position = new Pair<>(j, i);
+                final JButton jb = new JButton(logic.setText(position));
                 panel.add(jb);
+                this.cells.put(jb, position);
             }
         }
+        this.setAutoRequestFocus(true);
         this.setVisible(true);
     }
     

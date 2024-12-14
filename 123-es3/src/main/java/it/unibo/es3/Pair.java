@@ -59,7 +59,4 @@ public class Pair<X,Y> {
 	public String toString() {
 		return "Pair [x=" + x + ", y=" + y + "]";
 	}
-	
-	
-
 }
